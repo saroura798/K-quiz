@@ -1,0 +1,25 @@
+name: CI/CD - KQuiz
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker build -t kquiz .
+
+      - name: Login to DockerHub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Tag and Push image
+        run: |
+          docker tag kquiz ${{ secrets.DOCKER_USERNAME }}/kquiz
+          docker push ${{ secrets.DOCKER_USERNAME }}/kquiz
