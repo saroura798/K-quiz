@@ -6,15 +6,28 @@ on:
   pull_request:
 
 jobs:
-  validate-html:
+  build-and-validate:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # Step 1: Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Validate HTML using Docker
-        run: |
-          docker run --rm \
-            -v "${{ github.workspace }}:/workspace" \
-            validator/validator:latest \
-            /workspace/**/*.html
+      # Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Step 3: Install html-validate
+      - name: Install html-validate
+        run: npm install -g html-validate
+
+      # Step 4: Validate HTML
+      - name: Validate HTML files
+        run: html-validate "**/*.html"
+
+      # Step 5: Build Docker image (only runs if validation passes)
+      - name: Build Docker image
+        run: docker build -t my-nginx-app .
