@@ -1,0 +1,20 @@
+name: CI - HTML Validation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-html:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📦 Checkout du Code
+        uses: actions/checkout@v4
+
+      - name: 🔎 Validation HTML5 (tj-actions/html-validator)
+        # Utilise l'action stable et fonctionnelle pour la validation
+        uses: tj-actions/html-validator@v5
+        with:
+          files: '**/*.html' # Valide tous les fichiers .html du projet

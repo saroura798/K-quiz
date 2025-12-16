@@ -1,0 +1,29 @@
+name: CD - Déploiement GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    # 🔑 CORRECTION CRUCIALE : Ajout des permissions d'écriture
+    # pour que le GITHUB_TOKEN puisse créer/mettre à jour la branche gh-pages
+    permissions:
+      contents: write 
+
+    steps:
+      - name: 📦 Checkout du Code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Déploiement vers GitHub Pages
+        # Cette action prend les fichiers du répertoire actuel et les pousse sur 'gh-pages'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Chemin vers vos fichiers statiques. Assurez-vous que l'index.html est ici.
+          publish_dir: ./
+          publish_branch: gh-pages
+          force_orphan: true # Assure que 'gh-pages' est propre à chaque déploiement
