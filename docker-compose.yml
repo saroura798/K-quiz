@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  # Conteneur de l'application KQuiz
+  kquiz:
+    build: .
+    ports:
+      - "8080:80"
+    container_name: kquiz
+
+  # Conteneur Loki pour stocker les logs
+  loki:
+    image: grafana/loki:2.9.0
+    ports:
+      - "3100:3100"
+    container_name: loki
+
+  # Conteneur Grafana pour le dashboard
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    container_name: grafana
+    depends_on:
+      - loki
+
+  # Conteneur Promtail pour collecter les logs et les envoyer à Loki
+  promtail:
+    image: grafana/promtail:2.9.0
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/log:/var/log:ro
+      - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml:ro
+    command: -config.file=/etc/promtail/promtail-config.yaml
+    container_name: promtail
+    depends_on:
+      - loki
