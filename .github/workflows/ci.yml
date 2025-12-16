@@ -10,12 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Validate HTML with html-validate (Docker)
+      - name: Validate HTML using Docker
         run: |
           docker run --rm \
-            -v "${{ github.workspace }}:/data" \
-            ghcr.io/html-validate/html-validate:latest \
-            /data/**/*.html
+            -v "${{ github.workspace }}:/workspace" \
+            validator/validator:latest \
+            /workspace/**/*.html
