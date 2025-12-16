@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+    branches: [ main ]
   pull_request:
 
 jobs:
@@ -9,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Validate HTML using Docker
+      - name: Validate HTML with html-validate (Docker)
         run: |
           docker run --rm \
-            -v ${{ github.workspace }}:/workspace \
-            validator/validator:latest \
-            /workspace/**/*.html
+            -v "${{ github.workspace }}:/data" \
+            ghcr.io/html-validate/html-validate:latest \
+            /data/**/*.html
