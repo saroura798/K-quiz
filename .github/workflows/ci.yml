@@ -2,10 +2,10 @@ name: CI K-Quiz
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,3 +18,8 @@ jobs:
     - name: Run container test
       run: docker run -d -p 8080:80 k-quiz
 
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: .
