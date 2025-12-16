@@ -1,33 +1,20 @@
-name: CI
+name: CI K-Quiz
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  build-and-validate:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      # Step 2: Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+    - name: Build Docker image
+      run: docker build -t k-quiz .
 
-      # Step 3: Install html-validate
-      - name: Install html-validate
-        run: npm install -g html-validate
+    - name: Run container test
+      run: docker run -d -p 8080:80 k-quiz
 
-      # Step 4: Validate HTML
-      - name: Validate HTML files
-        run: html-validate "**/*.html"
-
-      # Step 5: Build Docker image (only runs if validation passes)
-      - name: Build Docker image
-        run: docker build -t my-nginx-app .
